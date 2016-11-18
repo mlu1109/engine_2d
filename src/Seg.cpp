@@ -1,5 +1,6 @@
 #include <algorithm>
 #include "Seg.hpp"
+#include <cfloat>
 
 namespace eng
 {
@@ -11,35 +12,35 @@ namespace eng
 
 	const Vec &Seg::a() const
 	{
-		return Line::a_;
+		return a_;
 	}
 
 	const Vec &Seg::b() const
 	{
-		return Line::b_;
+		return b_;
 	}
 
 	Vec Seg::min() const
 	{
-		return std::min(Line::a_, Line::b_);
+		return std::min(a_, b_);
 	}
 
 	Vec Seg::max() const
 	{
-		return std::max(Line::a_, Line::b_);
+		return std::max(a_, b_);
 	}
 
 	double Seg::length() const
 	{
 		return std::sqrt(
-				std::pow(Line::a_.x() - Line::b_.x(), 2) +
-				std::pow(Line::a_.y() - Line::b_.y(), 2)
+				std::pow(a_.x() - b_.x(), 2) +
+				std::pow(a_.y() - b_.y(), 2)
 		);
 	}
 
 	Seg Seg::project(const Vec &on) const
 	{
-		return Seg(Line::a_.project(on), Line::b_.project(on));
+		return Seg(a_.project(on), b_.project(on));
 	}
 
 
@@ -56,6 +57,11 @@ namespace eng
 		return true;
 	}
 
+	bool Seg::origin() const
+	{
+		return a_.origin() && b_.origin();
+	}
+
 	// Assumes that segments are parallel
 	Seg Seg::overlap(const Seg &s) const
 	{
@@ -65,6 +71,11 @@ namespace eng
 		Seg o(std::max(s.min(), min()), std::min(s.max(), max()));
 
 		return o;
+	}
+
+	Vec Seg::vector() const
+	{
+		return Vec(b_ - a_);
 	}
 
 	void Seg::operator+=(const Vec &rhs)
@@ -97,5 +108,10 @@ namespace eng
 	{
 		os << "Seg(" << s.a_ << ", " << s.b_ << ")";
 		return os;
+	}
+
+	Seg Seg::longestSeg()
+	{
+		return Seg(Vec(DBL_MIN, DBL_MIN), Vec(DBL_MAX, DBL_MAX));
 	}
 }

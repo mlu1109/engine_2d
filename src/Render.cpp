@@ -86,6 +86,12 @@ namespace eng
 		paintPoly(o.poly(), o.pos());
 	}
 
+	void Render::paintObjectWithBB(const PhysicsObject &o)
+	{
+		paintObject(o);
+		paintBox(o.poly().min() + o.pos(), o.poly().max() + o.pos());
+	}
+
 	void Render::paintBox(const Vec &min, const Vec &max)
 	{
 		int x = (int) min.x();
@@ -96,10 +102,24 @@ namespace eng
 		SDL_RenderDrawRect(gRenderer_, &box);
 	}
 
+	void Render::paintBB(const PhysicsObject &o)
+	{
+		paintBox(
+				o.poly().min() + o.pos(),
+				o.poly().max() + o.pos()
+		);
+	}
+
 	void Render::paintObjects(const std::vector<PhysicsObject> &v)
 	{
 		for (const auto &o : v)
 			paintObject(o);
+	}
+
+	void Render::paintObjectsWithBB(const std::vector<PhysicsObject> &v)
+	{
+		for (const auto &o : v)
+			paintObjectWithBB(o);
 	}
 }
 

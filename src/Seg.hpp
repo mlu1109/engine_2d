@@ -18,13 +18,16 @@ namespace eng
 		double length() const;
 		Seg project(const Vec &on) const;
 		Seg overlap(const Seg &other) const;
+		Vec vector() const;
 		bool overlapping(const Seg &other) const;
+		bool origin() const;
 		void operator+=(const Vec &rhs);
 		bool operator<(const Seg &rhs) const;
 		friend bool operator==(const Seg &lhs, const Seg &rhs);
 		friend bool operator!=(const Seg &lhs, const Seg &rhs);
 		friend Seg operator+(const Seg &lhs, const Vec &rhs);
 		friend std::ostream &operator<<(std::ostream &os, const Seg &s);
+		static Seg longestSeg();
 	};
 }
 

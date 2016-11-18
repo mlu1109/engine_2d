@@ -22,6 +22,7 @@ namespace eng
 		double dot(const Vec &rhs) const;
 		double angle(const Vec &rhs) const;
 		bool equals(const Vec &to) const;
+		bool origin() const;
 		Vec cross3d(double z) const;
 		Vec project(const Vec &on) const;
 		Vec unitVector() const;

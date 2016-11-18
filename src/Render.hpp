@@ -24,8 +24,11 @@ namespace eng
 		void paintSeg(const Seg &s);
 		void paintPoly(const Poly &p, const Vec& o);
 		void paintObject(const PhysicsObject &o);
+		void paintObjectWithBB(const PhysicsObject &o);
 		void paintObjects(const std::vector<PhysicsObject> &v);
+		void paintObjectsWithBB(const std::vector<PhysicsObject> &v);
 		void paintBox(const Vec &min, const Vec &max);
+		void paintBB(const PhysicsObject& o);
 	};
 }
 

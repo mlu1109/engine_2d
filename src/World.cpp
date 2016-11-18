@@ -48,6 +48,14 @@ namespace eng
 		}
 	}
 
+	void World::handleCollisions()
+	{
+		for (auto &c : collisions_)
+		{
+			c.SATCollisionCalcMTV();
+		}
+	}
+
 	bool World::timeStep()
 	{
 		time_.update();
@@ -59,6 +67,7 @@ namespace eng
 				obj.timeStep(dt);
 
 			findCollisions();
+			handleCollisions();
 			time_.reset();
 			return true;
 		}

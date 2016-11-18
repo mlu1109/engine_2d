@@ -66,6 +66,11 @@ namespace eng
 		return consts::EPSILON > std::abs(x_ - to.x_) && consts::EPSILON > std::abs(y_ - to.y_);
 	}
 
+	bool Vec::origin() const
+	{
+		return x_ == 0 && y_ == 0;
+	}
+
 	Vec Vec::cross3d(double z) const
 	{
 		return Vec(y_ * z, -(x_ * z));

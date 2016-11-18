@@ -82,7 +82,7 @@ namespace eng
 		return vertices_;
 	}
 
-	const std::vector<Vec> Poly::edgeNormals() const
+	std::vector<Vec> Poly::edgeNormals() const
 	{
 		std::vector<Vec> edge_normals;
 
@@ -94,6 +94,16 @@ namespace eng
 			double y = v_i.y() - v_j.y();
 			edge_normals.push_back(Vec(y, -x));
 		}
+
+		return edge_normals;
+	}
+
+	std::vector<Vec> Poly::edgeNormalsNormalized() const
+	{
+		std::vector<Vec> edge_normals = edgeNormals();
+
+		for (auto &v : edge_normals)
+			v = v.unitVector();
 
 		return edge_normals;
 	}

@@ -20,6 +20,7 @@ namespace eng
 		void addObject(const PhysicsObject &o);
 		PhysicsObject &getObject(int i);
 		void findCollisions();
+		void handleCollisions();
 		bool timeStep();
 	};
 }

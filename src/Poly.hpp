@@ -24,9 +24,10 @@ namespace eng
 	public:
 		Poly(const std::vector<Vec> &vertices);
 		const std::vector<Vec> &vertices() const;
-		const std::vector<Vec> edgeNormals() const;
 		const Vec &min() const;
 		const Vec &max() const;
+		std::vector<Vec> edgeNormals() const;
+		std::vector<Vec> edgeNormalsNormalized() const;
 		void rotate(double rad);
 		Seg project(const Vec &v, const Vec &o) const;
 		static Poly createEquilateral(double w, double h);

@@ -18,6 +18,44 @@ namespace eng
 		return b_;
 	}
 
+	const Vec &Collision::mtv() const
+	{
+		return mtv_;
+	}
+
+	bool Collision::sat() const
+	{
+		return sat_;
+	}
+
+	bool Collision::SATCollisionCalcMTV()
+	{
+		mtv_ = Vec(DBL_MAX, DBL_MAX);
+		std::vector<Vec> axes[2];
+		axes[0] = a_.poly().edgeNormalsNormalized();
+		axes[1] = b_.poly().edgeNormalsNormalized();
+		Seg mtv = Seg::longestSeg();
+
+		for (int i = 0; i < 2; ++i)
+		{
+			for (const auto &axis : axes[i])
+			{
+				Seg a_proj = a_.poly().project(axis, a_.pos());
+				Seg b_proj = b_.poly().project(axis, b_.pos());
+				Seg overlap = a_proj.overlap(b_proj);
+
+				if (overlap.origin())
+					return false;
+
+				mtv = overlap.length() < mtv.length() ? overlap : mtv;
+			}
+		}
+
+		sat_ = true;
+		mtv_ = mtv.vector().unitVector();
+		return true;
+	}
+
 	bool Collision::AABBCollision(const PhysicsObject &a, const PhysicsObject &b)
 	{
 		Vec a_min = a.poly().min() + a.pos();
