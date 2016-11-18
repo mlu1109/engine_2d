@@ -61,37 +61,35 @@ namespace eng
 		SDL_RenderDrawLine(gRenderer_, (int) o.x(), (int) o.y(), (int) v.x(), (int) v.y());
 	}
 
+	void Render::paintSeg(const Seg &s)
+	{
+		paintSeg(s.a(), s.b());
+	}
+
 	void Render::paintVec(const Vec &v)
 	{
 		paintSeg(Vec(0, 0), v);
 	}
 
-	void Render::paintPoly(const Poly &p)
+	void Render::paintPoly(const Poly &p, const Vec& o)
 	{
 		const auto &vertices = p.vertices();
 
 		for (auto i = 1; i < vertices.size(); ++i)
-			paintSeg(vertices[i - 1], vertices[i]);
+			paintSeg(vertices[i - 1] + o, vertices[i] + o);
 
-		paintSeg(vertices.back(), vertices.front());
+		paintSeg(vertices.back() + o, vertices.front() + o);
 	}
 
 	void Render::paintObject(const PhysicsObject &o)
 	{
-		const auto &offset = o.pos();
-		const auto &vertices = o.poly().vertices();
-
-		for (auto i = 1; i < vertices.size(); ++i)
-			paintSeg(vertices[i - 1] + offset, vertices[i] + offset);
-
-		paintSeg(vertices.back() + offset, vertices.front() + offset);
-		paintBox(o.poly().min() + offset, o.poly().max() + offset);
+		paintPoly(o.poly(), o.pos());
 	}
 
 	void Render::paintBox(const Vec &min, const Vec &max)
 	{
-		int x = (int)  min.x();
-		int y = (int)  min.y();
+		int x = (int) min.x();
+		int y = (int) min.y();
 		int w = (int) (max.x() - min.x());
 		int h = (int) (max.y() - min.y());
 		SDL_Rect box{x, y, w, h};

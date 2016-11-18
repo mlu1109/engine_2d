@@ -73,7 +73,7 @@ namespace eng
 
 	Vec Vec::project(const Vec &on) const
 	{
-		return (dot(on) / on.dot(on)) * on;
+		return dot(on) / on.dot(on) * on;
 	}
 
 	Vec Vec::unitVector() const
@@ -136,17 +136,17 @@ namespace eng
 		return Vec(lhs.x_ - rhs.x_, lhs.y_ - rhs.y_);
 	}
 
-	Vec operator*(const Vec &lhs, float rhs)
+	Vec operator*(const Vec &lhs, double rhs)
 	{
 		return Vec(lhs.x_ * rhs, lhs.y_ * rhs);
 	}
 
-	Vec operator*(float lhs, const Vec &rhs)
+	Vec operator*(double lhs, const Vec &rhs)
 	{
 		return Vec(lhs * rhs.x_, lhs * rhs.y_);
 	}
 
-	Vec operator/(const Vec &lhs, float rhs)
+	Vec operator/(const Vec &lhs, double rhs)
 	{
 		return Vec(lhs.x_ / rhs, lhs.y_ / rhs);
 	}
@@ -159,5 +159,16 @@ namespace eng
 	bool operator!=(const Vec &lhs, const Vec &rhs)
 	{
 		return !lhs.equals(rhs);
+	}
+
+	bool operator<(const Vec &lhs, const Vec &rhs)
+	{
+		return lhs.magnitude() < rhs.magnitude();
+	}
+
+	std::ostream &operator<<(std::ostream &os, const Vec &v)
+	{
+		os << "Vec(" << v.x_ << ", " << v.y_ << ")";
+		return os;
 	}
 }

@@ -50,10 +50,10 @@ namespace eng
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
 		{
-			if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
-				handleKeyEvent(event, controlled);
-			else if (event.type == SDL_QUIT)
+			if (event.type == SDL_QUIT || event.key.keysym.scancode == SDL_SCANCODE_ESCAPE)
 				running_ = false;
+			else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
+				handleKeyEvent(event, controlled);
 		}
 	}
 }

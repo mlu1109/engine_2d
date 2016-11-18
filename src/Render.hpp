@@ -21,7 +21,8 @@ namespace eng
 		void update();
 		void paintVec(const Vec &v);
 		void paintSeg(const Vec &o, const Vec &v);
-		void paintPoly(const Poly &p);
+		void paintSeg(const Seg &s);
+		void paintPoly(const Poly &p, const Vec& o);
 		void paintObject(const PhysicsObject &o);
 		void paintObjects(const std::vector<PhysicsObject> &v);
 		void paintBox(const Vec &min, const Vec &max);

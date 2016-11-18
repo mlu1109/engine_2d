@@ -1,6 +1,8 @@
 #ifndef ENGINE2D_VEC_HPP
 #define ENGINE2D_VEC_HPP
 
+#include <iostream>
+
 namespace eng
 {
 	class Vec
@@ -32,11 +34,13 @@ namespace eng
 		const Vec &operator+=(const Vec &rhs);
 		friend Vec operator+(const Vec &lhs, const Vec &rhs);
 		friend Vec operator-(const Vec &lhs, const Vec &rhs);
-		friend Vec operator*(const Vec &lhs, float rhs);
-		friend Vec operator*(float lhs, const Vec &rhs);
-		friend Vec operator/(const Vec &lhs, float rhs);
+		friend Vec operator*(const Vec &lhs, double rhs);
+		friend Vec operator*(double lhs, const Vec &rhs);
+		friend Vec operator/(const Vec &lhs, double rhs);
 		friend bool operator==(const Vec &lhs, const Vec &rhs);
 		friend bool operator!=(const Vec &lhs, const Vec &rhs);
+		friend bool operator<(const Vec &lhs, const Vec &rhs);
+		friend std::ostream &operator<<(std::ostream &os, const Vec &v);
 	};
 }
 

@@ -11,7 +11,7 @@ int main()
 
 	world.addObject(
 			eng::PhysicsObject(
-					eng::Vec(100, 100),
+					eng::Vec(300, 300),
 					eng::Poly::createRectangle(100, 100),
 					10
 			)
@@ -23,6 +23,8 @@ int main()
 					10
 			)
 	);
+
+	world.getObject(1).addAngVel(0.5);
 
 	eng::PhysicsObject &controlled = world.getObject(0);
 

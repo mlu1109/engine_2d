@@ -30,6 +30,22 @@ namespace eng
 	// http://www.dyn4j.org/2010/01/sat/
 	bool Collision::SATCollision(const PhysicsObject &a, const PhysicsObject &b)
 	{
+		std::vector<Vec> axes[2];
+		axes[0] = a.poly().edgeNormals();
+		axes[1] = b.poly().edgeNormals();
 
+		for (int i = 0; i < 2; ++i)
+		{
+			for (const auto &axis : axes[i])
+			{
+				Seg a_proj = a.poly().project(axis, a.pos());
+				Seg b_proj = b.poly().project(axis, b.pos());
+
+				if (!a_proj.overlapping(b_proj))
+					return false;
+			}
+		}
+
+		return true;
 	}
 }

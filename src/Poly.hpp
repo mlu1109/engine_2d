@@ -4,6 +4,7 @@
 #include <vector>
 #include "Vec.hpp"
 #include "Line.hpp"
+#include "Seg.hpp"
 
 namespace eng
 {
@@ -23,10 +24,11 @@ namespace eng
 	public:
 		Poly(const std::vector<Vec> &vertices);
 		const std::vector<Vec> &vertices() const;
-		const std::vector<Vec> &edgeNormals() const;
+		const std::vector<Vec> edgeNormals() const;
 		const Vec &min() const;
 		const Vec &max() const;
 		void rotate(double rad);
+		Seg project(const Vec &v, const Vec &o) const;
 		static Poly createEquilateral(double w, double h);
 		static Poly createPerpendicular(double w, double h);
 		static Poly createRectangle(double w, double h);

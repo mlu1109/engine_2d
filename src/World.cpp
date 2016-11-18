@@ -43,9 +43,7 @@ namespace eng
 			for (auto j = i + 1; j < objects_.size(); ++j)
 			{
 				if (Collision::AABBCollision(objects_[i], objects_[j]))
-				{
 					collisions_.push_back(Collision(objects_[i], objects_[j]));
-				}
 			}
 		}
 	}
