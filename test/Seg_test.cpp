@@ -20,6 +20,10 @@ TEST(seg, overlapping)
 	Seg c(Vec(5, 5), Vec(6, 6));
 	EXPECT_FALSE(a.overlapping(c));
 	EXPECT_FALSE(c.overlapping(a));
+
+	a = Seg(Vec(3, 2), Vec(1, 1));
+	b = Seg(Vec(6, 5), Vec(2, 3));
+	ASSERT_TRUE(a.overlapping(b));
 }
 
 TEST(seg, overlap)

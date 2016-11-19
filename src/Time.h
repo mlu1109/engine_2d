@@ -14,7 +14,7 @@ namespace eng
 		Time();
 		void update();
 		void reset();
-		double dt() const;
+		double handleDt();
 	};
 }
 

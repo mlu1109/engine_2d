@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Time.h"
+#include "Consts.hpp"
 
 namespace eng
 {
@@ -22,8 +23,13 @@ namespace eng
 		acc_dt_ = 0;
 	}
 
-	double Time::dt() const
+	double Time::handleDt()
 	{
-		return acc_dt_;
+		update();
+		double r = acc_dt_;
+		if (acc_dt_ >= consts::TICK_RATE)
+			reset();
+
+		return r;
 	}
 }

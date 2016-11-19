@@ -16,19 +16,19 @@ namespace eng
 			{
 				case SDL_SCANCODE_UP:
 				case SDL_SCANCODE_W:
-					controlled.addVel(Vec(0, -5));
+					controlled.addVel(Vec(0, -10));
 					break;
 				case SDL_SCANCODE_LEFT:
 				case SDL_SCANCODE_A:
-					controlled.addVel(Vec(-5, 0));
+					controlled.addVel(Vec(-10, 0));
 					break;
 				case SDL_SCANCODE_DOWN:
 				case SDL_SCANCODE_S:
-					controlled.addVel(Vec(0, 5));
+					controlled.addVel(Vec(0, 10));
 					break;
 				case SDL_SCANCODE_RIGHT:
 				case SDL_SCANCODE_D:
-					controlled.addVel(Vec(5, 0));
+					controlled.addVel(Vec(10, 0));
 					break;
 				case SDL_SCANCODE_Q:
 					controlled.addAngVel(-0.3);

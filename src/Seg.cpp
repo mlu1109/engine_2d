@@ -20,16 +20,6 @@ namespace eng
 		return b_;
 	}
 
-	Vec Seg::min() const
-	{
-		return std::min(a_, b_);
-	}
-
-	Vec Seg::max() const
-	{
-		return std::max(a_, b_);
-	}
-
 	double Seg::length() const
 	{
 		return std::sqrt(
@@ -44,17 +34,29 @@ namespace eng
 	}
 
 
-	// Assumes that segments are parallel
+	// Assumes that segments are collinear
 	bool Seg::overlapping(const Seg &s) const
 	{
-		Seg t_1(min(), s.max());
-		Seg t_2(s.min(), max());
-		double max_length = s.length() + length();
+		if (a().x() != b().x())
+		{
+			const Vec& a = a_.x() < b_.x() ? a_ : b_;
+			const Vec& b = a == a_ ? b_ : a_;
+			const Vec& c = s.a().x() < s.b().x() ? s.a() : s.b();
+			const Vec& d = c == s.a() ? s.b() : s.a();
+			if ((a.x() < c.x() && c.x() < b.x()) || (c.x() < a.x() && a.x() < d.x()))
+				return true;
+		}
+		else
+		{
+			const Vec& a = a_.y() < b_.y() ? a_ : b_;
+			const Vec& b = a == a_ ? b_ : a_;
+			const Vec& c = s.a().y() < s.b().y() ? s.a() : s.b();
+			const Vec& d = c == s.a() ? s.b() : s.a();
+			if ((a.y() < c.y() && c.y() < b.y()) || (c.y() < a.y() && a.y() < d.y()))
+				return true;
+		}
 
-		if (max_length < t_1.length() || max_length < t_2.length())
-			return false;
-
-		return true;
+		return false;
 	}
 
 	bool Seg::origin() const
@@ -62,15 +64,33 @@ namespace eng
 		return a_.origin() && b_.origin();
 	}
 
-	// Assumes that segments are parallel
+	// Assumes that segments are collinear, if no overlap is found an "empty" segment is returned
 	Seg Seg::overlap(const Seg &s) const
 	{
-		if (!overlapping(s))
-			return Seg(Vec(0, 0), Vec(0, 0));
+		if (a().x() != b().x())
+		{
+			const Vec& a = a_.x() < b_.x() ? a_ : b_;
+			const Vec& b = a == a_ ? b_ : a_;
+			const Vec& c = s.a().x() < s.b().x() ? s.a() : s.b();
+			const Vec& d = c == s.a() ? s.b() : s.a();
+			if ((a.x() < c.x() && c.x() < b.x()))
+				return Seg(c, b);
+			else if (c.x() < a.x() && a.x() < d.x())
+				return Seg(a, d);
+		}
+		else
+		{
+			const Vec& a = a_.y() < b_.y() ? a_ : b_;
+			const Vec& b = a == a_ ? b_ : a_;
+			const Vec& c = s.a().y() < s.b().y() ? s.a() : s.b();
+			const Vec& d = c == s.a() ? s.b() : s.a();
+			if ((a.y() < c.y() && c.y() < b.y()))
+				return Seg(c, b);
+			else if (c.y() < a.y() && a.y() < d.y())
+				return Seg(a, d);
+		}
 
-		Seg o(std::max(s.min(), min()), std::min(s.max(), max()));
-
-		return o;
+		return Seg(Vec(0, 0), Vec(0, 0));
 	}
 
 	Vec Seg::vector() const

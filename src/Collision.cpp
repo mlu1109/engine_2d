@@ -28,9 +28,9 @@ namespace eng
 		return sat_;
 	}
 
+	// http://www.dyn4j.org/2010/01/sat/
 	bool Collision::SATCollisionCalcMTV()
 	{
-		mtv_ = Vec(DBL_MAX, DBL_MAX);
 		std::vector<Vec> axes[2];
 		axes[0] = a_.poly().edgeNormalsNormalized();
 		axes[1] = b_.poly().edgeNormalsNormalized();

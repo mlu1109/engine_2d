@@ -13,12 +13,10 @@ namespace eng
 		Seg(const Vec &a, const Vec &b);
 		const Vec &a() const;
 		const Vec &b() const;
-		Vec min() const;
-		Vec max() const;
-		double length() const;
 		Seg project(const Vec &on) const;
 		Seg overlap(const Seg &other) const;
 		Vec vector() const;
+		double length() const;
 		bool overlapping(const Seg &other) const;
 		bool origin() const;
 		void operator+=(const Vec &rhs);

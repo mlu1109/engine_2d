@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include "World.hpp"
+#include "Consts.hpp"
 
 namespace eng
 {
@@ -58,17 +59,15 @@ namespace eng
 
 	bool World::timeStep()
 	{
-		time_.update();
-		double dt = time_.dt();
+		double dt = time_.handleDt();
 
-		if (dt >= 1.0 / 60.0)
+		if (dt >= consts::TICK_RATE)
 		{
 			for (auto &obj : objects_)
 				obj.timeStep(dt);
 
 			findCollisions();
 			handleCollisions();
-			time_.reset();
 			return true;
 		}
 

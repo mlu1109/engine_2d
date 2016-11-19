@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Render.hpp"
 
 namespace eng
@@ -58,7 +57,7 @@ namespace eng
 
 	void Render::paintSeg(const eng::Vec &o, const Vec &v)
 	{
-		SDL_RenderDrawLine(gRenderer_, (int) o.x(), (int) o.y(), (int) v.x(), (int) v.y());
+		SDL_RenderDrawLine(gRenderer_, (int) (o.x() - cam_pos_.x()), (int) (o.y() - cam_pos_.y()), (int) (v.x() - cam_pos_.x()), (int) (v.y() - cam_pos_.y()));
 	}
 
 	void Render::paintSeg(const Seg &s)
@@ -88,14 +87,16 @@ namespace eng
 
 	void Render::paintObjectWithBB(const PhysicsObject &o)
 	{
+		setColor(0x00FF0000);
 		paintObject(o);
+		setColor(0x00770000);
 		paintBox(o.poly().min() + o.pos(), o.poly().max() + o.pos());
 	}
 
 	void Render::paintBox(const Vec &min, const Vec &max)
 	{
-		int x = (int) min.x();
-		int y = (int) min.y();
+		int x = (int) (min.x() - cam_pos_.x());
+		int y = (int) (min.y() - cam_pos_.y());
 		int w = (int) (max.x() - min.x());
 		int h = (int) (max.y() - min.y());
 		SDL_Rect box{x, y, w, h};
@@ -120,6 +121,45 @@ namespace eng
 	{
 		for (const auto &o : v)
 			paintObjectWithBB(o);
+	}
+
+	void Render::paintDebugCollision(const Collision &c)
+	{
+		const auto &a = c.a();
+		const auto &b = c.b();
+
+		setColor(0xFFFF0000);
+		paintBB(a);
+		paintBB(b);
+
+		if (c.sat())
+		{
+			setColor(0xFF000000);
+			paintObject(a);
+			paintObject(b);
+			setColor(0x00FFFF00);
+			paintSeg(a.pos(), a.pos() + c.mtv() * 100);
+		}
+
+		std::vector<Vec> axes[2];
+		axes[0] = a.poly().edgeNormals();
+		axes[1] = b.poly().edgeNormals();
+
+		for (int i = 0; i < 2; ++i)
+		{
+			for (const auto &axis : axes[i])
+			{
+				setColor(0x77777700);
+				Seg a_proj = a.poly().project(axis, a.pos());
+				Seg b_proj = b.poly().project(axis, b.pos());
+				Seg overlap = a_proj.overlap(b_proj);
+				paintSeg(a_proj);
+				paintSeg(b_proj);
+				setColor(0xFF000000);
+				paintSeg(overlap);
+			}
+		}
+
 	}
 }
 
