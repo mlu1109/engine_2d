@@ -1,4 +1,3 @@
-#include <iostream>
 #include "Render.hpp"
 #include "World.hpp"
 #include "Input.h"
@@ -41,20 +40,15 @@ int main()
 	{
 		if (world.timeStep())
 		{
-			input.handleEvents(world, controlled);
+			input.handleEvents(world, controlled, render);
 
 			render.clear();
-			render.paintObjectsWithBB(world.objects());
+			render.paintObjects(world.objects());
 
-			for (const auto &c : world.collisions())
+			/*for (const auto &c : world.collisions())
 			{
 				render.paintDebugCollision(c);
-				render.setColor(0xFF69B400);
-				for (const auto &v : c.pois())
-				{
-					render.paintPoint(v);
-				}
-			}
+			}*/
 
 			render.update();
 		}

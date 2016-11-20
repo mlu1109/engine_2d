@@ -1,4 +1,5 @@
 #include "Input.h"
+#include "Render.hpp"
 
 namespace eng
 {
@@ -45,7 +46,7 @@ namespace eng
 		}
 	}
 
-	void Input::handleEvents(World &world, PhysicsObject &controlled)
+	void Input::handleEvents(World &world, PhysicsObject &controlled, Render &render)
 	{
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -54,6 +55,15 @@ namespace eng
 				running_ = false;
 			else if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP)
 				handleKeyEvent(event, controlled);
+			else if (event.type == SDL_MOUSEWHEEL)
+			{
+				int mouse_x, mouse_y;
+				SDL_GetMouseState(&mouse_x, &mouse_y);
+				render.addZoomRelPos(event.wheel.y < 0 ? 0.05 : -0.05, Vec(mouse_x, mouse_y));
+			}
+
+			if (event.motion.state == SDL_PRESSED)
+				render.addCamPosRelZoom(Vec(-event.motion.xrel, -event.motion.yrel));
 		}
 	}
 }

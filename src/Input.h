@@ -3,6 +3,7 @@
 
 #include <SDL2/SDL.h>
 #include "World.hpp"
+#include "Render.hpp"
 
 namespace eng
 {
@@ -11,7 +12,7 @@ namespace eng
 		void handleKeyEvent(const SDL_Event &event, PhysicsObject &controlled);
 		bool running_ = true;
 	public:
-		void handleEvents(World &world, PhysicsObject &controlled);
+		void handleEvents(World &world, PhysicsObject &controlled, Render &render);
 		bool running() const;
 	};
 }

@@ -55,7 +55,10 @@ namespace eng
 		{
 			c.SATCollisionCalcMTV();
 			if (c.sat())
-				c.calcPointOfIntersection();
+			{
+				c.calcPointsOfIntersection();
+				c.resolveCollision();
+			}
 		}
 	}
 

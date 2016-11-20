@@ -22,7 +22,8 @@ namespace eng
 		const std::vector<Vec> &pois() const;
 		bool sat() const;
 		bool SATCollisionCalcMTV();
-		void calcPointOfIntersection();
+		void calcPointsOfIntersection();
+		void resolveCollision();
 		static bool AABBCollision(const PhysicsObject &a, const PhysicsObject &b);
 		static bool SATCollision(const PhysicsObject &a, const PhysicsObject &b);
 	};

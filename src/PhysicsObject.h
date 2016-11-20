@@ -13,18 +13,22 @@ namespace eng
 		Vec pos_;
 		double mass_ = 0;
 		double inv_mass_ = 0;
+		double inertia_ = 0;
+		double inv_inertia_ = 0;
 		double ang_acc_ = 0;
 		double ang_vel_ = 0;
-		double restitution_ = 0;
-		double friction_ = 0;
 	public:
 		PhysicsObject(const Vec &pos, const Poly &poly, double mass);
 		const Poly &poly() const;
 		const Vec &pos() const;
-		void addAcc(const Vec &acc);
+		const Vec &vel() const;
+		const Vec &acc() const;
+		double inv_mass() const;
+		double inv_inertia() const;
+		double ang_vel() const;
 		void addVel(const Vec &vel);
-		void addAngAcc(double ang_acc);
 		void addAngVel(double ang_vel);
+		void calcInertia();
 		void immediateStop();
 		void rotate(double rad);
 		void timeStep(double dt);

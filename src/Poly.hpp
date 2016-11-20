@@ -14,11 +14,8 @@ namespace eng
 		Vec min_;
 		Vec max_;
 		double area_;
-		double inertia_;
-		double inv_inertia_;
 		void updateArea();
 		void adjustCentroidToOrigo();
-		void updateInertia();
 		void updateBoundingBox();
 		Vec getCentroid();
 	public:

@@ -9,28 +9,37 @@
 
 namespace eng
 {
+	struct Camera
+	{
+		Vec pos = Vec(0, 0);
+		double zoom = 1;
+	};
+
 	class Render
 	{
 		SDL_Window *gWindow_ = NULL;
 		SDL_Renderer *gRenderer_ = NULL;
 		uint32_t bg_color = 0x00000000;
-		Vec cam_pos_ = Vec(-100, -100);
+		Camera camera;
 	public:
 		Render();
 		~Render();
+		void addZoomRelPos(double a, const Vec &m_pos);
+		void addCamPosRelZoom(const Vec &pos);
 		void setColor(uint32_t rgba);
+		Vec convertToCamCoords(Vec &v);
 		void clear();
 		void update();
-		void paintPoint(const Vec &p);
+		void paintPoint(Vec p);
 		void paintVec(const Vec &v);
-		void paintSeg(const Vec &f, const Vec &t);
+		void paintSeg(Vec f, Vec t);
 		void paintSeg(const Seg &s);
 		void paintPoly(const Poly &p, const Vec &o);
 		void paintObject(const PhysicsObject &o);
 		void paintObjectWithBB(const PhysicsObject &o);
 		void paintObjects(const std::vector<PhysicsObject> &v);
 		void paintObjectsWithBB(const std::vector<PhysicsObject> &v);
-		void paintBox(const Vec &min, const Vec &max);
+		void paintBox(Vec min, Vec max);
 		void paintBB(const PhysicsObject &o);
 		void paintDebugCollision(const Collision &c);
 	};

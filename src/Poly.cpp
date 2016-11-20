@@ -9,7 +9,6 @@ namespace eng
 	{
 		updateArea();
 		adjustCentroidToOrigo();
-		updateInertia();
 		updateBoundingBox();
 	}
 
@@ -134,26 +133,6 @@ namespace eng
 			v.rotate(rad);
 
 		updateBoundingBox();
-	}
-
-	// https://en.wikipedia.org/wiki/Second_moment_of_area#Any_polygon
-	// https://en.wikipedia.org/wiki/Perpendicular_axis_theorem
-	void Poly::updateInertia()
-	{
-		double i_x = 0, i_y = 0;
-
-		for (auto i = 0; i < vertices_.size(); ++i)
-		{
-			const auto &v_i = vertices_[i];
-			const auto &v_j = vertices_[i + 1 == vertices_.size() ? 0 : i + 1];
-			i_x += (v_i.y_sqrd() + v_i.y() * v_j.y() + v_j.y_sqrd()) * (v_i.x() * v_j.y() - v_j.x() * v_i.y());
-			i_y += (v_i.x_sqrd() + v_i.x() * v_j.x() + v_j.x_sqrd()) * (v_i.x() * v_j.y() - v_j.x() * v_i.y());
-		}
-
-		i_x /= 12;
-		i_y /= 12;
-		inertia_ = i_x + i_y;
-		inv_inertia_ = 1 / inertia_;
 	}
 
 	Poly Poly::createEquilateral(double w, double h)

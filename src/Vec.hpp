@@ -33,6 +33,7 @@ namespace eng
 		void rotate(double rad);
 		const Vec &operator-=(const Vec &rhs);
 		const Vec &operator+=(const Vec &rhs);
+		const Vec &operator*=(const double rhs);
 		friend Vec operator+(const Vec &lhs, const Vec &rhs);
 		friend Vec operator-(const Vec &lhs, const Vec &rhs);
 		friend Vec operator*(const Vec &lhs, double rhs);
@@ -42,6 +43,7 @@ namespace eng
 		friend bool operator!=(const Vec &lhs, const Vec &rhs);
 		friend bool operator<(const Vec &lhs, const Vec &rhs);
 		friend std::ostream &operator<<(std::ostream &os, const Vec &v);
+		static Vec cross(double lhs, const Vec &rhs);
 	};
 }
 

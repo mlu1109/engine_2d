@@ -33,6 +33,25 @@ namespace eng
 		SDL_Quit();
 	}
 
+	void Render::addZoomRelPos(double amount, const Vec &m_pos)
+	{
+		auto before = camera.pos + m_pos / camera.zoom;
+		camera.zoom += amount * camera.zoom;
+		auto after = camera.pos + m_pos / camera.zoom;
+		camera.pos += before - after;
+	}
+
+	void Render::addCamPosRelZoom(const Vec &pos)
+	{
+		camera.pos += pos / camera.zoom;
+	}
+
+	Vec Render::convertToCamCoords(Vec &v)
+	{
+		v -= camera.pos;
+		v *= camera.zoom;
+	}
+
 	void Render::setColor(uint32_t rgba)
 	{
 		SDL_SetRenderDrawColor(
@@ -55,19 +74,21 @@ namespace eng
 		SDL_RenderPresent(gRenderer_);
 	}
 
-	void Render::paintPoint(const Vec &p)
+	void Render::paintPoint(Vec p)
 	{
+		convertToCamCoords(p);
 		int width = 4;
 		int height = 4;
-		SDL_Rect point = {(int) (p.x() - width / 2 - cam_pos_.x()), (int) (p.y() - height / 2 - cam_pos_.y()),
+		SDL_Rect point = {(int) (p.x() - width / 2), (int) (p.y() - height / 2),
 						  width / 2, height / 2};
 		SDL_RenderFillRect(gRenderer_, &point);
 	}
 
-	void Render::paintSeg(const eng::Vec &o, const Vec &v)
+	void Render::paintSeg(Vec o, Vec v)
 	{
-		SDL_RenderDrawLine(gRenderer_, (int) (o.x() - cam_pos_.x()), (int) (o.y() - cam_pos_.y()),
-						   (int) (v.x() - cam_pos_.x()), (int) (v.y() - cam_pos_.y()));
+		convertToCamCoords(o);
+		convertToCamCoords(v);
+		SDL_RenderDrawLine(gRenderer_, (int) o.x(), (int) o.y(), (int) v.x(), (int) v.y());
 	}
 
 	void Render::paintSeg(const Seg &s)
@@ -92,6 +113,7 @@ namespace eng
 
 	void Render::paintObject(const PhysicsObject &o)
 	{
+		setColor(0xFFFFFF00);
 		paintPoly(o.poly(), o.pos());
 	}
 
@@ -103,10 +125,12 @@ namespace eng
 		paintBox(o.poly().min() + o.pos(), o.poly().max() + o.pos());
 	}
 
-	void Render::paintBox(const Vec &min, const Vec &max)
+	void Render::paintBox(Vec min, Vec max)
 	{
-		int x = (int) (min.x() - cam_pos_.x());
-		int y = (int) (min.y() - cam_pos_.y());
+		convertToCamCoords(min);
+		convertToCamCoords(max);
+		int x = (int) min.x();
+		int y = (int) min.y();
 		int w = (int) (max.x() - min.x());
 		int h = (int) (max.y() - min.y());
 		SDL_Rect box{x, y, w, h};
@@ -170,6 +194,11 @@ namespace eng
 			}
 		}
 
+		setColor(0xFF69B400);
+		for (const auto &v : c.pois())
+		{
+			paintPoint(v);
+		}
 	}
 }
 

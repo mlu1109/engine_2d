@@ -131,6 +131,13 @@ namespace eng
 		return *this;
 	}
 
+	const Vec &Vec::operator*=(const double rhs)
+	{
+		x_ *= rhs;
+		y_ *= rhs;
+		return *this;
+	}
+
 	Vec operator+(const Vec &lhs, const Vec &rhs)
 	{
 		return Vec(lhs.x_ + rhs.x_, lhs.y_ + rhs.y_);
@@ -175,5 +182,10 @@ namespace eng
 	{
 		os << "Vec(" << v.x_ << ", " << v.y_ << ")";
 		return os;
+	}
+
+	Vec Vec::cross(double lhs, const Vec &rhs)
+	{
+		return Vec(-lhs * rhs.y(), rhs.x() * lhs);
 	}
 }

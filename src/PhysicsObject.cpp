@@ -4,9 +4,9 @@
 namespace eng
 {
 	PhysicsObject::PhysicsObject(const Vec &pos, const Poly &poly, double mass) :
-			pos_(pos), poly_(poly), mass_(mass)
+			pos_(pos), poly_(poly), mass_(mass), inv_mass_(1 / mass)
 	{
-
+		calcInertia();
 	}
 
 	const Poly &PhysicsObject::poly() const
@@ -19,24 +19,59 @@ namespace eng
 		return pos_;
 	}
 
-	void PhysicsObject::addAcc(const Vec &acc)
+	const Vec &PhysicsObject::vel() const
 	{
-		acc_ += acc;
+		return vel_;
 	}
+
+	const Vec &PhysicsObject::acc() const
+	{
+		return acc_;
+	}
+
+	double PhysicsObject::inv_mass() const
+	{
+		return inv_mass_;
+	}
+
+	double PhysicsObject::inv_inertia() const
+	{
+		return inv_inertia_;
+	}
+
+	double PhysicsObject::ang_vel() const
+	{
+		return ang_vel_;
+	}
+
 
 	void PhysicsObject::addVel(const Vec &vel)
 	{
 		vel_ += vel;
 	}
 
-	void PhysicsObject::addAngAcc(double ang_acc)
-	{
-		ang_acc_ += ang_acc;
-	}
 
 	void PhysicsObject::addAngVel(double ang_vel)
 	{
 		ang_vel_ += ang_vel;
+	}
+
+	// https://en.wikipedia.org/wiki/List_of_moments_of_inertia#Moments_of_inertia
+	void PhysicsObject::calcInertia()
+	{
+		const auto &vertices = poly_.vertices();
+		double i_n = 0, i_d = 0;
+
+		for (int i = 0; i < vertices.size(); ++i)
+		{
+			const auto &v_i = vertices[i];
+			const auto &v_j = vertices[i + 1 == vertices.size() ? 0 : i + 1];
+			i_n += v_j.cross2d(v_i) * (v_i.dot(v_i) + v_i.dot(v_j) + v_j.dot(v_j));
+			i_d += v_j.cross2d(v_i);
+		}
+
+		inertia_ = (mass_ * i_n) / (6 * i_d);
+		inv_inertia_ = 1.0 / inertia_;
 	}
 
 	void PhysicsObject::immediateStop()
@@ -146,5 +181,4 @@ namespace eng
 		return x_min > -consts::EPSILON && x_max < consts::EPSILON &&
 			   y_min > -consts::EPSILON && y_max < consts::EPSILON;
 	}
-
 }

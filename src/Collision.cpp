@@ -1,3 +1,4 @@
+#include <cmath>
 #include "Collision.hpp"
 
 namespace eng
@@ -62,7 +63,7 @@ namespace eng
 		return true;
 	}
 
-	void Collision::calcPointOfIntersection()
+	void Collision::calcPointsOfIntersection()
 	{
 		auto a_edges = a_.edges();
 		auto b_edges = b_.edges();
@@ -105,6 +106,31 @@ namespace eng
 		}
 
 		return true;
+	}
+
+	// http://www.myphysicslab.com/engine2D/collision/collision-en.html
+	void Collision::resolveCollision()
+	{
+		double e = 1; // For the time being
+
+		const auto &p = pois_[0];
+		const auto &n = mtv_.dot(a_.pos()) > 0 ? -1 * mtv_ : mtv_;
+		const auto r_ap = p - a_.pos();
+		const auto r_bp = p - b_.pos();
+		// Pre-collision velocities
+		const auto v_ap1 = a_.vel() + Vec::cross(a_.ang_vel(), r_ap);
+		const auto v_bp1 = b_.vel() + Vec::cross(b_.ang_vel(), r_bp);
+		const auto v_ab1 = v_ap1 - v_bp1;
+		// Impulse parameter
+		const double j = (-(1 + e) * v_ab1.dot(n)) /
+						 (a_.inv_mass() + b_.inv_mass() +
+						  std::pow(r_ap.cross2d(n), 2) * a_.inv_inertia() +
+						  std::pow(r_bp.cross2d(n), 2) * b_.inv_inertia());
+		// Apply impulse
+		a_.addVel(j * n * a_.inv_mass());
+		b_.addVel(-j * n * b_.inv_mass());
+		a_.addAngVel(r_ap.cross2d(j * n) * a_.inv_inertia());
+		b_.addAngVel(-r_bp.cross2d(j * n) * b_.inv_inertia());
 	}
 
 
