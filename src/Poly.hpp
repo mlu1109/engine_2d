@@ -26,10 +26,10 @@ namespace eng
 		const std::vector<Vec> &vertices() const;
 		const Vec &min() const;
 		const Vec &max() const;
+		std::vector<Seg> edges() const;
 		std::vector<Vec> edgeNormals() const;
 		std::vector<Vec> edgeNormalsNormalized() const;
 		void rotate(double rad);
-		Seg project(const Vec &v, const Vec &o) const;
 		static Poly createEquilateral(double w, double h);
 		static Poly createPerpendicular(double w, double h);
 		static Poly createRectangle(double w, double h);

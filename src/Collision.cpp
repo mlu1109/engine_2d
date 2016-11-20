@@ -23,6 +23,11 @@ namespace eng
 		return mtv_;
 	}
 
+	const std::vector<Vec> &Collision::pois() const
+	{
+		return pois_;
+	}
+
 	bool Collision::sat() const
 	{
 		return sat_;
@@ -34,15 +39,15 @@ namespace eng
 		std::vector<Vec> axes[2];
 		axes[0] = a_.poly().edgeNormalsNormalized();
 		axes[1] = b_.poly().edgeNormalsNormalized();
-		Seg mtv = Seg::longestSeg();
+		auto mtv = Seg::longestSeg();
 
 		for (int i = 0; i < 2; ++i)
 		{
 			for (const auto &axis : axes[i])
 			{
-				Seg a_proj = a_.poly().project(axis, a_.pos());
-				Seg b_proj = b_.poly().project(axis, b_.pos());
-				Seg overlap = a_proj.overlap(b_proj);
+				auto a_proj = a_.project(axis);
+				auto b_proj = b_.project(axis);
+				auto overlap = a_proj.overlap(b_proj);
 
 				if (overlap.origin())
 					return false;
@@ -53,16 +58,31 @@ namespace eng
 
 		sat_ = true;
 		mtv_ = mtv.vector().unitVector();
+
 		return true;
+	}
+
+	void Collision::calcPointOfIntersection()
+	{
+		auto a_edges = a_.edges();
+		auto b_edges = b_.edges();
+		pois_.clear();
+
+		for (const auto &a_e : a_edges)
+		{
+			for (const auto &b_e : b_edges)
+			{
+				auto poi = a_e.intersection(b_e);
+				if (a_.bbContains(poi) && b_.bbContains(poi))
+					pois_.push_back(poi);
+			}
+		}
 	}
 
 	bool Collision::AABBCollision(const PhysicsObject &a, const PhysicsObject &b)
 	{
-		Vec a_min = a.poly().min() + a.pos();
-		Vec a_max = a.poly().max() + a.pos();
-		Vec b_min = b.poly().min() + b.pos();
-		Vec b_max = b.poly().max() + b.pos();
-		return !(a_max.x() < b_min.x() || a_max.y() < b_min.y() || b_max.x() < a_min.x() || b_max.y() < a_min.y());
+		return !(a.max().x() < b.min().x() || a.max().y() < b.min().y() ||
+				 b.max().x() < a.min().x() || b.max().y() < a.min().y());
 	}
 
 	// http://www.dyn4j.org/2010/01/sat/
@@ -76,8 +96,8 @@ namespace eng
 		{
 			for (const auto &axis : axes[i])
 			{
-				Seg a_proj = a.poly().project(axis, a.pos());
-				Seg b_proj = b.poly().project(axis, b.pos());
+				auto a_proj = a.project(axis);
+				auto b_proj = b.project(axis);
 
 				if (!a_proj.overlapping(b_proj))
 					return false;
@@ -86,4 +106,6 @@ namespace eng
 
 		return true;
 	}
+
+
 }

@@ -12,14 +12,17 @@ namespace eng
 		PhysicsObject &a_;
 		PhysicsObject &b_;
 		Vec mtv_;
+		std::vector<Vec> pois_;
 		bool sat_ = false;
 	public:
 		Collision(PhysicsObject &a, PhysicsObject &b);
 		const PhysicsObject &a() const;
 		const PhysicsObject &b() const;
 		const Vec &mtv() const;
+		const std::vector<Vec> &pois() const;
 		bool sat() const;
 		bool SATCollisionCalcMTV();
+		void calcPointOfIntersection();
 		static bool AABBCollision(const PhysicsObject &a, const PhysicsObject &b);
 		static bool SATCollision(const PhysicsObject &a, const PhysicsObject &b);
 	};

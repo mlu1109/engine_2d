@@ -55,9 +55,19 @@ namespace eng
 		SDL_RenderPresent(gRenderer_);
 	}
 
+	void Render::paintPoint(const Vec &p)
+	{
+		int width = 4;
+		int height = 4;
+		SDL_Rect point = {(int) (p.x() - width / 2 - cam_pos_.x()), (int) (p.y() - height / 2 - cam_pos_.y()),
+						  width / 2, height / 2};
+		SDL_RenderFillRect(gRenderer_, &point);
+	}
+
 	void Render::paintSeg(const eng::Vec &o, const Vec &v)
 	{
-		SDL_RenderDrawLine(gRenderer_, (int) (o.x() - cam_pos_.x()), (int) (o.y() - cam_pos_.y()), (int) (v.x() - cam_pos_.x()), (int) (v.y() - cam_pos_.y()));
+		SDL_RenderDrawLine(gRenderer_, (int) (o.x() - cam_pos_.x()), (int) (o.y() - cam_pos_.y()),
+						   (int) (v.x() - cam_pos_.x()), (int) (v.y() - cam_pos_.y()));
 	}
 
 	void Render::paintSeg(const Seg &s)
@@ -70,7 +80,7 @@ namespace eng
 		paintSeg(Vec(0, 0), v);
 	}
 
-	void Render::paintPoly(const Poly &p, const Vec& o)
+	void Render::paintPoly(const Poly &p, const Vec &o)
 	{
 		const auto &vertices = p.vertices();
 
@@ -150,8 +160,8 @@ namespace eng
 			for (const auto &axis : axes[i])
 			{
 				setColor(0x77777700);
-				Seg a_proj = a.poly().project(axis, a.pos());
-				Seg b_proj = b.poly().project(axis, b.pos());
+				Seg a_proj = a.project(axis);
+				Seg b_proj = b.project(axis);
 				Seg overlap = a_proj.overlap(b_proj);
 				paintSeg(a_proj);
 				paintSeg(b_proj);

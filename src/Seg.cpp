@@ -1,11 +1,18 @@
 #include <algorithm>
 #include "Seg.hpp"
+#include "Consts.hpp"
 #include <cfloat>
 
 namespace eng
 {
 	Seg::Seg(const Vec &a, const Vec &b) :
 			Line(a, b)
+	{
+
+	}
+
+	Seg::Seg(double x_1, double y_1, double x_2, double y_2) :
+			Line(Vec(x_1, y_1), Vec(x_2, y_2))
 	{
 
 	}
@@ -33,30 +40,18 @@ namespace eng
 		return Seg(a_.project(on), b_.project(on));
 	}
 
-
 	// Assumes that segments are collinear
 	bool Seg::overlapping(const Seg &s) const
 	{
-		if (a().x() != b().x())
-		{
-			const Vec& a = a_.x() < b_.x() ? a_ : b_;
-			const Vec& b = a == a_ ? b_ : a_;
-			const Vec& c = s.a().x() < s.b().x() ? s.a() : s.b();
-			const Vec& d = c == s.a() ? s.b() : s.a();
-			if ((a.x() < c.x() && c.x() < b.x()) || (c.x() < a.x() && a.x() < d.x()))
-				return true;
-		}
-		else
-		{
-			const Vec& a = a_.y() < b_.y() ? a_ : b_;
-			const Vec& b = a == a_ ? b_ : a_;
-			const Vec& c = s.a().y() < s.b().y() ? s.a() : s.b();
-			const Vec& d = c == s.a() ? s.b() : s.a();
-			if ((a.y() < c.y() && c.y() < b.y()) || (c.y() < a.y() && a.y() < d.y()))
-				return true;
-		}
+		const auto &a = from();
+		const auto &b = to();
+		const auto &c = s.from();
+		const auto &d = s.to();
 
-		return false;
+		return (
+				(!horizontal() && (a.x() < c.x() && c.x() < b.x()) || (c.x() < a.x() && a.x() < d.x())) ||
+				(a.y() < c.y() && c.y() < b.y()) ||	(c.y() < a.y() && a.y() < d.y())
+		);
 	}
 
 	bool Seg::origin() const
@@ -64,15 +59,21 @@ namespace eng
 		return a_.origin() && b_.origin();
 	}
 
+	bool Seg::parallel(const Seg &s) const
+	{
+		return std::abs(s.vector().cross2d(vector())) < consts::EPSILON;
+	}
+
 	// Assumes that segments are collinear, if no overlap is found an "empty" segment is returned
 	Seg Seg::overlap(const Seg &s) const
 	{
-		if (a().x() != b().x())
+		const Vec &a = from();
+		const Vec &b = to();
+		const Vec &c = s.from();
+		const Vec &d = s.to();
+
+		if (horizontal())
 		{
-			const Vec& a = a_.x() < b_.x() ? a_ : b_;
-			const Vec& b = a == a_ ? b_ : a_;
-			const Vec& c = s.a().x() < s.b().x() ? s.a() : s.b();
-			const Vec& d = c == s.a() ? s.b() : s.a();
 			if ((a.x() < c.x() && c.x() < b.x()))
 				return Seg(c, b);
 			else if (c.x() < a.x() && a.x() < d.x())
@@ -80,10 +81,6 @@ namespace eng
 		}
 		else
 		{
-			const Vec& a = a_.y() < b_.y() ? a_ : b_;
-			const Vec& b = a == a_ ? b_ : a_;
-			const Vec& c = s.a().y() < s.b().y() ? s.a() : s.b();
-			const Vec& d = c == s.a() ? s.b() : s.a();
 			if ((a.y() < c.y() && c.y() < b.y()))
 				return Seg(c, b);
 			else if (c.y() < a.y() && a.y() < d.y())
@@ -93,9 +90,44 @@ namespace eng
 		return Seg(Vec(0, 0), Vec(0, 0));
 	}
 
-	Vec Seg::vector() const
+	Vec Seg::intersection(const Seg &s) const
 	{
-		return Vec(b_ - a_);
+		if (s.vertical() && horizontal() || s.horizontal() && vertical())
+		{
+			if (s.vertical())
+				return Vec(s.a_.x(), a_.y());
+
+			return Vec(a_.x(), s.a_.y());
+		}
+
+		const auto &a = from();
+		const auto &b = to();
+		const auto &c = s.from();
+		const auto &d = s.to();
+
+		double k_1 = (b.y() - a.y()) / (b.x() - a.x());
+		double k_2 = (d.y() - c.y()) / (d.x() - c.x()); // s
+		double m_1 = (a.y() - k_1 * a.x());
+		double m_2 = (c.y() - k_2 * c.x()); // s
+		double x, y;
+
+		if (s.vertical() || vertical())
+		{
+			x = s.vertical() ? s.a().x() : a_.x();
+			y = s.vertical() ? k_1 * x + m_1 : k_2 * x + m_2;
+		}
+		else if (s.horizontal() || horizontal())
+		{
+			y = s.horizontal() ? s.a().y() : a_.y();
+			x = s.horizontal() ? (y - m_1) / k_1 : (y - m_2) / k_2;
+		}
+		else
+		{
+			x = (m_2 - m_1) / (k_1 - k_2);
+			y = k_1 * x + m_1;
+		}
+
+		return Vec(x, y);
 	}
 
 	void Seg::operator+=(const Vec &rhs)

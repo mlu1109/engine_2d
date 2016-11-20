@@ -54,6 +54,8 @@ namespace eng
 		for (auto &c : collisions_)
 		{
 			c.SATCollisionCalcMTV();
+			if (c.sat())
+				c.calcPointOfIntersection();
 		}
 	}
 

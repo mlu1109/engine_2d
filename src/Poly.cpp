@@ -82,6 +82,16 @@ namespace eng
 		return vertices_;
 	}
 
+	std::vector<Seg> Poly::edges() const
+	{
+		std::vector<Seg> edges;
+
+		for (auto i = 0; i < vertices_.size(); ++i)
+			edges.push_back(Seg(vertices_[i], vertices_[i + 1 == vertices_.size() ? 0 : i + 1]));
+
+		return edges;
+	}
+
 	std::vector<Vec> Poly::edgeNormals() const
 	{
 		std::vector<Vec> edge_normals;
@@ -100,7 +110,7 @@ namespace eng
 
 	std::vector<Vec> Poly::edgeNormalsNormalized() const
 	{
-		std::vector<Vec> edge_normals = edgeNormals();
+		auto edge_normals = edgeNormals();
 
 		for (auto &v : edge_normals)
 			v = v.unitVector();
@@ -144,31 +154,6 @@ namespace eng
 		i_y /= 12;
 		inertia_ = i_x + i_y;
 		inv_inertia_ = 1 / inertia_;
-	}
-
-	Seg Poly::project(const Vec &v, const Vec &o) const
-	{
-		double min = v.dot(vertices_[0]);
-		double max = min;
-		Vec mini = (vertices_[0] + o).project(v);
-		Vec maxi = mini;
-
-		for (const auto &i : vertices_)
-		{
-			double p = v.dot(i);
-			if (p < min)
-			{
-				min = p;
-				mini = (i + o).project(v);
-			}
-			else if (p > max)
-			{
-				max = p;
-				maxi = (i + o).project(v);
-			}
-		}
-
-		return Seg(mini, maxi);
 	}
 
 	Poly Poly::createEquilateral(double w, double h)

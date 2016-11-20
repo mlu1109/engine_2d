@@ -11,14 +11,16 @@ namespace eng
 	{
 	public:
 		Seg(const Vec &a, const Vec &b);
+		Seg(double x_1, double y_1, double x_2, double y_2);
 		const Vec &a() const;
 		const Vec &b() const;
 		Seg project(const Vec &on) const;
-		Seg overlap(const Seg &other) const;
-		Vec vector() const;
+		Seg overlap(const Seg &s) const;
 		double length() const;
-		bool overlapping(const Seg &other) const;
+		bool overlapping(const Seg &s) const;
 		bool origin() const;
+		bool parallel(const Seg &s) const;
+		Vec intersection(const Seg &s) const;
 		void operator+=(const Vec &rhs);
 		bool operator<(const Seg &rhs) const;
 		friend bool operator==(const Seg &lhs, const Seg &rhs);

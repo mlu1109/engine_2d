@@ -28,6 +28,14 @@ namespace eng
 		void immediateStop();
 		void rotate(double rad);
 		void timeStep(double dt);
+		std::vector<Vec> vertices() const;
+		std::vector<Seg> edges() const;
+		std::vector<Vec> edgeNormals() const;
+		std::vector<Vec> edgeNormalsNormalized() const;
+		Vec min() const;
+		Vec max() const;
+		Seg project(const Vec &v) const;
+		bool bbContains(const Vec &p) const;
 	};
 }
 

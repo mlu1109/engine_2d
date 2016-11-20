@@ -28,27 +28,32 @@ int main()
 	world.addObject(
 			PhysicsObject(
 					Vec(100, 100),
-					Poly::createPentagon(100, 100),
+					Poly::createRectangle(150, 150),
 					10
 			)
 	);
 
-	world.getObject(1).addAngVel(0.5);
+	//world.getObject(1).addAngVel(0.1);
 
-	PhysicsObject &controlled = world.getObject(0);
+	auto &controlled = world.getObject(0);
 
 	while (input.running())
 	{
 		if (world.timeStep())
 		{
 			input.handleEvents(world, controlled);
-			
+
 			render.clear();
 			render.paintObjectsWithBB(world.objects());
 
 			for (const auto &c : world.collisions())
 			{
 				render.paintDebugCollision(c);
+				render.setColor(0xFF69B400);
+				for (const auto &v : c.pois())
+				{
+					render.paintPoint(v);
+				}
 			}
 
 			render.update();

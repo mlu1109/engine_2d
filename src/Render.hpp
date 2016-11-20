@@ -21,16 +21,17 @@ namespace eng
 		void setColor(uint32_t rgba);
 		void clear();
 		void update();
+		void paintPoint(const Vec &p);
 		void paintVec(const Vec &v);
 		void paintSeg(const Vec &f, const Vec &t);
 		void paintSeg(const Seg &s);
-		void paintPoly(const Poly &p, const Vec& o);
+		void paintPoly(const Poly &p, const Vec &o);
 		void paintObject(const PhysicsObject &o);
 		void paintObjectWithBB(const PhysicsObject &o);
 		void paintObjects(const std::vector<PhysicsObject> &v);
 		void paintObjectsWithBB(const std::vector<PhysicsObject> &v);
 		void paintBox(const Vec &min, const Vec &max);
-		void paintBB(const PhysicsObject& o);
+		void paintBB(const PhysicsObject &o);
 		void paintDebugCollision(const Collision &c);
 	};
 }

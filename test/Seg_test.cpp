@@ -37,3 +37,30 @@ TEST(seg, overlap)
 	a = Seg(Vec(0, 0), Vec(2, 2));
 	EXPECT_EQ(a.overlap(b), Seg(Vec(0, 0), Vec(0, 0)));
 }
+
+TEST(seg, intersection)
+{
+	Seg a(Vec(0, 0), Vec(2, 2));
+	Seg b(Vec(0, 2), Vec(2, 0));
+	EXPECT_EQ(a.intersection(b), Vec(1, 1));
+	EXPECT_EQ(b.intersection(a), Vec(1, 1));
+	a = Seg(Vec(2, 2), Vec(0, 0));
+	b = Seg(Vec(2, 0), Vec(0, 2));
+	EXPECT_EQ(a.intersection(b), Vec(1, 1));
+	a = Seg(1, 0, 1, 1);
+	b = Seg(-1, 1, 2, 1);
+	EXPECT_EQ(a.intersection(b), Vec(1, 1));
+	EXPECT_EQ(b.intersection(a), Vec(1, 1));
+	a = Seg(-1, 1, 2, 1);
+	b = Seg(1, 0, 1, 1);
+	EXPECT_EQ(a.intersection(b), Vec(1, 1));
+	EXPECT_EQ(b.intersection(a), Vec(1, 1));
+	a = Seg(1, 0, 1, 1);
+	b = Seg(0, 1, 1, 2);
+	EXPECT_EQ(a.intersection(b), Vec(1, 2));
+	EXPECT_EQ(b.intersection(a), Vec(1, 2));
+	a = Seg(0, 1, 3, 1);
+	b = Seg(0, -3, 3, 0);
+	EXPECT_EQ(a.intersection(b), Vec(4, 1));
+	EXPECT_EQ(b.intersection(a), Vec(4, 1));
+}
