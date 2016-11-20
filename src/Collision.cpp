@@ -58,7 +58,7 @@ namespace eng
 		}
 
 		sat_ = true;
-		mtv_ = mtv.vector().unitVector();
+		mtv_ = mtv.vector();
 
 		return true;
 	}
@@ -109,12 +109,12 @@ namespace eng
 	}
 
 	// http://www.myphysicslab.com/engine2D/collision/collision-en.html
-	void Collision::resolveCollision()
+	void Collision::impulseBasedResolution()
 	{
 		double e = 1; // For the time being
 
 		const auto &p = pois_[0];
-		const auto &n = mtv_.dot(a_.pos()) > 0 ? -1 * mtv_ : mtv_;
+		const auto &n = mtv_.dot(a_.pos()) > 0 ? -1 * mtv_.unitVector() : mtv_.unitVector();
 		const auto r_ap = p - a_.pos();
 		const auto r_bp = p - b_.pos();
 		// Pre-collision velocities
@@ -133,5 +133,11 @@ namespace eng
 		b_.addAngVel(-r_bp.cross2d(j * n) * b_.inv_inertia());
 	}
 
+	void Collision::resolveCollision()
+	{
+		if (pois_.empty())
+			return;
 
+		impulseBasedResolution();
+	}
 }

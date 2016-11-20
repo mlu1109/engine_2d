@@ -24,11 +24,6 @@ namespace eng
 		return vel_;
 	}
 
-	const Vec &PhysicsObject::acc() const
-	{
-		return acc_;
-	}
-
 	double PhysicsObject::inv_mass() const
 	{
 		return inv_mass_;
@@ -44,12 +39,15 @@ namespace eng
 		return ang_vel_;
 	}
 
+	void PhysicsObject::addPos(const Vec &pos)
+	{
+		pos_ += pos;
+	}
 
 	void PhysicsObject::addVel(const Vec &vel)
 	{
 		vel_ += vel;
 	}
-
 
 	void PhysicsObject::addAngVel(double ang_vel)
 	{
@@ -82,11 +80,6 @@ namespace eng
 		ang_vel_ = 0;
 	}
 
-	void PhysicsObject::rotate(double rad)
-	{
-		poly_.rotate(rad);
-	}
-
 	void PhysicsObject::timeStep(double dt)
 	{
 		vel_ += acc_ * dt;
@@ -113,26 +106,6 @@ namespace eng
 			e += pos_;
 
 		return edges;
-	}
-
-	std::vector<Vec> PhysicsObject::edgeNormals() const
-	{
-		std::vector<Vec> edge_normals = poly_.edgeNormals();
-
-		for (auto &v : edge_normals)
-			v += pos_;
-
-		return edge_normals;
-	}
-
-	std::vector<Vec> PhysicsObject::edgeNormalsNormalized() const
-	{
-		std::vector<Vec> edge_normals_normalized = poly_.edgeNormalsNormalized();
-
-		for (auto &v : edge_normals_normalized)
-			v += pos_;
-
-		return edge_normals_normalized;
 	}
 
 	Vec PhysicsObject::min() const

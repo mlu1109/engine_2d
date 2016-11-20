@@ -11,7 +11,7 @@ namespace eng
 {
 	struct Camera
 	{
-		Vec pos = Vec(0, 0);
+		Vec pos = Vec(-150, -150);
 		double zoom = 1;
 	};
 
@@ -27,7 +27,9 @@ namespace eng
 		void addZoomRelPos(double a, const Vec &m_pos);
 		void addCamPosRelZoom(const Vec &pos);
 		void setColor(uint32_t rgba);
-		Vec convertToCamCoords(Vec &v);
+		void convertWorldToCamCoords(Vec &v);
+		void convertScreenToWorldCoords(Vec &v);
+		void convertScreenCoordsRelZoom(Vec &v);
 		void clear();
 		void update();
 		void paintPoint(Vec p);

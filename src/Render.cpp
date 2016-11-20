@@ -46,10 +46,21 @@ namespace eng
 		camera.pos += pos / camera.zoom;
 	}
 
-	Vec Render::convertToCamCoords(Vec &v)
+	void Render::convertWorldToCamCoords(Vec &v)
 	{
 		v -= camera.pos;
 		v *= camera.zoom;
+	}
+
+	void Render::convertScreenToWorldCoords(Vec &v)
+	{
+		v /= camera.zoom;
+		v += camera.pos;
+	}
+
+	void Render::convertScreenCoordsRelZoom(Vec &v)
+	{
+		v /= camera.zoom;
 	}
 
 	void Render::setColor(uint32_t rgba)
@@ -76,7 +87,7 @@ namespace eng
 
 	void Render::paintPoint(Vec p)
 	{
-		convertToCamCoords(p);
+		convertWorldToCamCoords(p);
 		int width = 4;
 		int height = 4;
 		SDL_Rect point = {(int) (p.x() - width / 2), (int) (p.y() - height / 2),
@@ -86,8 +97,8 @@ namespace eng
 
 	void Render::paintSeg(Vec o, Vec v)
 	{
-		convertToCamCoords(o);
-		convertToCamCoords(v);
+		convertWorldToCamCoords(o);
+		convertWorldToCamCoords(v);
 		SDL_RenderDrawLine(gRenderer_, (int) o.x(), (int) o.y(), (int) v.x(), (int) v.y());
 	}
 
@@ -113,22 +124,21 @@ namespace eng
 
 	void Render::paintObject(const PhysicsObject &o)
 	{
-		setColor(0xFFFFFF00);
 		paintPoly(o.poly(), o.pos());
 	}
 
 	void Render::paintObjectWithBB(const PhysicsObject &o)
 	{
-		setColor(0x00FF0000);
+		setColor(0xFFFFFF00);
 		paintObject(o);
-		setColor(0x00770000);
+		setColor(0x33333300);
 		paintBox(o.poly().min() + o.pos(), o.poly().max() + o.pos());
 	}
 
 	void Render::paintBox(Vec min, Vec max)
 	{
-		convertToCamCoords(min);
-		convertToCamCoords(max);
+		convertWorldToCamCoords(min);
+		convertWorldToCamCoords(max);
 		int x = (int) min.x();
 		int y = (int) min.y();
 		int w = (int) (max.x() - min.x());
@@ -147,6 +157,7 @@ namespace eng
 
 	void Render::paintObjects(const std::vector<PhysicsObject> &v)
 	{
+		setColor(0xFFFFFF00);
 		for (const auto &o : v)
 			paintObject(o);
 	}

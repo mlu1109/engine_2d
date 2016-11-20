@@ -18,7 +18,8 @@ namespace eng
 		const std::vector<PhysicsObject> &objects() const;
 		const std::vector<Collision> &collisions() const;
 		void addObject(const PhysicsObject &o);
-		PhysicsObject &getObject(int i);
+		PhysicsObject *getObject(int i);
+		PhysicsObject *getObjectAtPos(const Vec& v);
 		void findCollisions();
 		void handleCollisions();
 		bool timeStep();

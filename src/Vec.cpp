@@ -26,24 +26,9 @@ namespace eng
 		return y_;
 	}
 
-	double Vec::x_sqrd() const
-	{
-		return x_ * x_;
-	}
-
-	double Vec::y_sqrd() const
-	{
-		return y_ * y_;
-	}
-
 	double Vec::magnitude() const
 	{
 		return std::sqrt(x_ * x_ + y_ * y_);
-	}
-
-	double Vec::distance(const Vec &to) const
-	{
-		return std::sqrt((x_ - to.x_) * (x_ - to.x_) + (y_ - to.y_) * (y_ - to.y_));
 	}
 
 	double Vec::cross2d(const Vec &rhs) const
@@ -56,11 +41,6 @@ namespace eng
 		return x_ * rhs.x_ + y_ * rhs.y_;
 	}
 
-	double Vec::angle(const Vec &rhs) const
-	{
-		return std::acos(dot(rhs) / (magnitude() + rhs.magnitude()));
-	}
-
 	bool Vec::equals(const Vec &to) const
 	{
 		return consts::EPSILON > std::abs(x_ - to.x_) && consts::EPSILON > std::abs(y_ - to.y_);
@@ -71,11 +51,6 @@ namespace eng
 		return x_ == 0 && y_ == 0;
 	}
 
-	Vec Vec::cross3d(double z) const
-	{
-		return Vec(y_ * z, -(x_ * z));
-	}
-
 	Vec Vec::project(const Vec &on) const
 	{
 		return dot(on) / on.dot(on) * on;
@@ -84,30 +59,6 @@ namespace eng
 	Vec Vec::unitVector() const
 	{
 		return *this / magnitude();
-	}
-
-	void Vec::add(const Vec &rhs)
-	{
-		x_ += rhs.x_;
-		y_ += rhs.y_;
-	}
-
-	void Vec::sub(const Vec &rhs)
-	{
-		x_ -= rhs.x_;
-		y_ -= rhs.y_;
-	}
-
-	void Vec::mul(double factor)
-	{
-		x_ *= factor;
-		y_ *= factor;
-	}
-
-	void Vec::div(double denominator)
-	{
-		x_ /= denominator;
-		y_ /= denominator;
 	}
 
 	void Vec::rotate(double rad)
@@ -135,6 +86,13 @@ namespace eng
 	{
 		x_ *= rhs;
 		y_ *= rhs;
+		return *this;
+	}
+
+	const Vec &Vec::operator/=(const double rhs)
+	{
+		x_ /= rhs;
+		y_ /= rhs;
 		return *this;
 	}
 

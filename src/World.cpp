@@ -31,9 +31,20 @@ namespace eng
 		objects_.push_back(obj);
 	}
 
-	PhysicsObject &World::getObject(int i)
+	PhysicsObject *World::getObject(int i)
 	{
-		return objects_[i];
+		return &objects_[i];
+	}
+
+	PhysicsObject *World::getObjectAtPos(const Vec &v)
+	{
+		for (auto& o : objects_)
+		{
+			if (o.bbContains(v))
+				return &o;
+		}
+
+		return nullptr;
 	}
 
 	void World::findCollisions()
