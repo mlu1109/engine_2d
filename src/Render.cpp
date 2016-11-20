@@ -200,5 +200,39 @@ namespace eng
 			paintPoint(v);
 		}
 	}
+
+	void Render::paintGrid()
+	{
+		int screen_w, screen_h;
+		SDL_GetWindowSize(gWindow_, &screen_w, &screen_h);
+		screen_w /= camera.zoom;
+		screen_h /= camera.zoom;
+		// Paint grid
+		setColor(0x11111100);
+		int x_dist = 50, y_dist = 50;
+		if (camera.zoom < 0.08)
+			SDL_RenderClear(gRenderer_);
+		else
+		{
+			for (auto r = 0; r < screen_h / y_dist; ++r)
+			{
+				paintSeg(Seg(camera.pos.x(),
+							 camera.pos.y() + y_dist * r,
+							 camera.pos.x() + screen_w,
+							 camera.pos.y() + y_dist * r)
+				);
+				for (auto c = 0; c < screen_w / x_dist; ++c)
+					paintSeg(Seg(camera.pos.x() + x_dist * c,
+								 camera.pos.y(),
+								 camera.pos.x() + x_dist * c,
+								 camera.pos.y() + screen_h)
+					);
+			}
+		}
+		// Paint axes
+		setColor(0x88888800);
+		paintSeg(Seg(camera.pos.x(), 0, camera.pos.x() + screen_w, 0));
+		paintSeg(Seg(0, camera.pos.y(), 0, camera.pos.y() + screen_h));
+	}
 }
 

@@ -42,6 +42,7 @@ namespace eng
 		void paintBox(Vec min, Vec max);
 		void paintBB(const PhysicsObject &o);
 		void paintDebugCollision(const Collision &c);
+		void paintGrid();
 	};
 }
 

@@ -43,8 +43,8 @@ int main()
 			input.handleEvents(world, controlled, render);
 
 			render.clear();
+			render.paintGrid();
 			render.paintObjects(world.objects());
-
 			/*for (const auto &c : world.collisions())
 			{
 				render.paintDebugCollision(c);
