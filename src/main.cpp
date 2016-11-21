@@ -33,13 +33,19 @@ int main()
 	);
 	world.addObject(
 			PhysicsObject(
-					Vec(-300, -300),
-					Poly::createRectangle(5, 1000),
+					Vec(0, 0),
+					Poly::createRectangle(1000, 5),
 					INFINITY
 			)
 	);
 
-	//world.getObject(1).addAngVel(0.1);
+	world.addObject(
+			PhysicsObject(
+					Vec(0, 400),
+					Poly::createRectangle(1000, 5),
+					INFINITY
+			)
+	);
 
 	auto *controlled = world.getObject(0);
 
@@ -54,10 +60,10 @@ int main()
 			render.paintObjects(world.objects());
 			render.setColor(0xFF0000);
 			render.paintObject(*controlled);
-			/*for (const auto &c : world.collisions())
+			for (const auto &c : world.collisions())
 			{
 				render.paintDebugCollision(c);
-			}*/
+			}
 
 			render.update();
 		}

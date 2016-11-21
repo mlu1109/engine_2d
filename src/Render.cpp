@@ -183,7 +183,7 @@ namespace eng
 			paintObject(a);
 			paintObject(b);
 			setColor(0x00FFFF00);
-			paintSeg(a.pos(), a.pos() + c.mtv() * 100);
+			paintSeg(a.pos(), a.pos() + c.mtv());
 		}
 
 		std::vector<Vec> axes[2];

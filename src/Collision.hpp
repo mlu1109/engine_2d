@@ -23,6 +23,7 @@ namespace eng
 		bool sat() const;
 		bool SATCollisionCalcMTV();
 		void calcPointsOfIntersection();
+		void separateObjects();
 		void impulseBasedResolution();
 		void resolveCollision();
 		static bool AABBCollision(const PhysicsObject &a, const PhysicsObject &b);
