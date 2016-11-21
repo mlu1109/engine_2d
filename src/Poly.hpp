@@ -15,7 +15,7 @@ namespace eng
 		Vec max_;
 		double area_;
 		void updateArea();
-		void adjustCentroidToOrigo();
+		void adjustCentroidToOrigin();
 		void updateBoundingBox();
 		Vec getCentroid();
 	public:

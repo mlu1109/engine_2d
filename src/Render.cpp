@@ -28,8 +28,8 @@ namespace eng
 	{
 		SDL_DestroyRenderer(gRenderer_);
 		SDL_DestroyWindow(gWindow_);
-		gWindow_ = NULL;
-		gRenderer_ = NULL;
+		gWindow_ = nullptr;
+		gRenderer_ = nullptr;
 		SDL_Quit();
 	}
 

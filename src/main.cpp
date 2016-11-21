@@ -1,6 +1,6 @@
 #include "Render.hpp"
 #include "World.hpp"
-#include "Input.h"
+#include "Input.hpp"
 
 using namespace eng;
 

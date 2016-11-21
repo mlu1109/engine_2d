@@ -8,7 +8,7 @@ namespace eng
 			vertices_(vertices)
 	{
 		updateArea();
-		adjustCentroidToOrigo();
+		adjustCentroidToOrigin();
 		updateBoundingBox();
 	}
 
@@ -68,7 +68,7 @@ namespace eng
 		return Vec(x, y);
 	}
 
-	void Poly::adjustCentroidToOrigo()
+	void Poly::adjustCentroidToOrigin()
 	{
 		Vec c = getCentroid();
 
