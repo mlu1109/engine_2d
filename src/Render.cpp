@@ -15,12 +15,12 @@ namespace eng
 				SDL_WINDOW_SHOWN
 		);
 
-		if (gWindow_ == nullptr)
+		if (!gWindow_)
 			std::cout << "Could not create window: " << SDL_GetError() << '\n';
 
 		gRenderer_ = SDL_CreateRenderer(gWindow_, -1, SDL_RENDERER_ACCELERATED);
 
-		if (gRenderer_ == nullptr)
+		if (!gRenderer_)
 			std::cout << "Could not create renderer: " << SDL_GetError() << '\n';
 	}
 
@@ -33,32 +33,32 @@ namespace eng
 		SDL_Quit();
 	}
 
-	void Render::addZoomRelPos(double amount, const Vec &m_pos)
+	void Render::cameraZoomRelPos(double f, const Vec &m_pos)
 	{
 		auto before = camera.pos + m_pos / camera.zoom;
-		camera.zoom += amount * camera.zoom;
+		camera.zoom += f * camera.zoom;
 		auto after = camera.pos + m_pos / camera.zoom;
 		camera.pos += before - after;
 	}
 
-	void Render::addCamPosRelZoom(const Vec &pos)
+	void Render::cameraMoveRelZoom(const Vec &pos)
 	{
 		camera.pos += pos / camera.zoom;
 	}
 
-	void Render::convertWorldToCamCoords(Vec &v)
+	void Render::transformWorldToCamPos(Vec &v)
 	{
 		v -= camera.pos;
 		v *= camera.zoom;
 	}
 
-	void Render::convertScreenToWorldCoords(Vec &v)
+	void Render::transformScreenToWorldPos(Vec &v)
 	{
 		v /= camera.zoom;
 		v += camera.pos;
 	}
 
-	void Render::convertScreenCoordsRelZoom(Vec &v)
+	void Render::transformScreenPosRelZoom(Vec &v)
 	{
 		v /= camera.zoom;
 	}
@@ -87,7 +87,7 @@ namespace eng
 
 	void Render::paintPoint(Vec p)
 	{
-		convertWorldToCamCoords(p);
+		transformWorldToCamPos(p);
 		int width = 4;
 		int height = 4;
 		SDL_Rect point = {(int) (p.x() - width / 2), (int) (p.y() - height / 2),
@@ -97,8 +97,8 @@ namespace eng
 
 	void Render::paintSeg(Vec o, Vec v)
 	{
-		convertWorldToCamCoords(o);
-		convertWorldToCamCoords(v);
+		transformWorldToCamPos(o);
+		transformWorldToCamPos(v);
 		SDL_RenderDrawLine(gRenderer_, (int) o.x(), (int) o.y(), (int) v.x(), (int) v.y());
 	}
 
@@ -137,8 +137,8 @@ namespace eng
 
 	void Render::paintBox(Vec min, Vec max)
 	{
-		convertWorldToCamCoords(min);
-		convertWorldToCamCoords(max);
+		transformWorldToCamPos(min);
+		transformWorldToCamPos(max);
 		int x = (int) min.x();
 		int y = (int) min.y();
 		int w = (int) (max.x() - min.x());

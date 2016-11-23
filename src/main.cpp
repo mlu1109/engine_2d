@@ -48,22 +48,19 @@ int main()
 		);
 	}
 
-
-	auto *controlled = world.getObject(0);
-	controlled->addAngVel(500);
-
 	while (input.running())
 	{
 		if (world.timeStep())
 		{
-			input.handleEvents(world, controlled, render);
+			input.handleEvents(world, render);
 
 			render.clear();
 			render.paintGrid();
 			render.paintObjects(world.objects());
 			render.setColor(0xFF0000);
-			render.paintObject(*controlled);
-			/*for (const auto &c : world.collisions())
+			if (input.controlled())
+				render.paintObject(*input.controlled());
+			/*for (const auto &c : worleeeeeeeeeeeeed.collisions())
 			{
 				render.paintDebugCollision(c);
 			}*/

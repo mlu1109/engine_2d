@@ -9,6 +9,11 @@ namespace eng
 		return running_;
 	}
 
+	const PhysicsObject *Input::controlled() const
+	{
+		return controlled_;
+	}
+
 	Vec Input::mouseScreenPos()
 	{
 		int screen_x, screen_y;
@@ -16,43 +21,73 @@ namespace eng
 		return Vec(screen_x, screen_y);
 	}
 
-	void Input::mouseSetControlled(PhysicsObject *&controlled, World &world, Render &render)
+	void Input::mouseSetControlled(World &world, Render &render)
 	{
 		Vec m_pos = mouseScreenPos();
-		render.convertScreenToWorldCoords(m_pos);
+		render.transformScreenToWorldPos(m_pos);
 		PhysicsObject *clicked = world.getObjectAtPos(m_pos);
-
-		if (clicked != nullptr)
-			controlled = clicked;
+		controlled_ = clicked;
 	}
 
-	void Input::mouseMoveShape(const SDL_Event &event, PhysicsObject *&controlled, World &world, Render &render)
+	void Input::mouseMoveControlled(const SDL_Event &event, World &world, Render &render)
 	{
-		Vec m_pos = mouseScreenPos();
-		render.convertScreenToWorldCoords(m_pos);
-		PhysicsObject *clicked = world.getObjectAtPos(m_pos);
+		if (!controlled_)
+			return;
 
-		if (clicked != nullptr)
-		{
-			Vec rel_motion(event.motion.xrel, event.motion.yrel);
-			render.convertScreenCoordsRelZoom(rel_motion);
-			clicked->addPos(rel_motion);
-			controlled = clicked;
-			controlled->immediateStop();
-		}
+		Vec motion(event.motion.xrel, event.motion.yrel);
+		render.transformScreenPosRelZoom(motion);
+		controlled_->addPos(motion);
+		controlled_->immediateStop();
 	}
 
 	void Input::mouseCameraMove(const SDL_Event &event, Render &render)
 	{
-		render.addCamPosRelZoom(Vec(-event.motion.xrel, -event.motion.yrel));
+		render.cameraMoveRelZoom(Vec(-event.motion.xrel, -event.motion.yrel));
 	}
 
 	void Input::mouseCameraZoom(const SDL_Event &event, Render &render)
 	{
-		render.addZoomRelPos(event.wheel.y < 0 ? consts::SCROLL_RATE : -consts::SCROLL_RATE, mouseScreenPos());
+		render.cameraZoomRelPos(event.wheel.y < 0 ? consts::SCROLL_RATE : -consts::SCROLL_RATE, mouseScreenPos());
 	}
 
-	void Input::handleKeyEvent(const SDL_Event &event, PhysicsObject *&controlled)
+	void Input::keyboardMoveControlled(const SDL_Event &event)
+	{
+		if (!controlled_)
+			return;
+
+		switch (event.key.keysym.scancode)
+		{
+			case SDL_SCANCODE_UP:
+			case SDL_SCANCODE_W:
+				controlled_->addVel(consts::UP_VEL_MOD);
+				break;
+			case SDL_SCANCODE_LEFT:
+			case SDL_SCANCODE_A:
+				controlled_->addVel(consts::LEFT_VEL_MOD);
+				break;
+			case SDL_SCANCODE_DOWN:
+			case SDL_SCANCODE_S:
+				controlled_->addVel(consts::DOWN_VEL_MOD);
+				break;
+			case SDL_SCANCODE_RIGHT:
+			case SDL_SCANCODE_D:
+				controlled_->addVel(consts::RIGHT_VEL_MOD);
+				break;
+			case SDL_SCANCODE_Q:
+				controlled_->addAngVel(-consts::ANG_VEC_MOD);
+				break;
+			case SDL_SCANCODE_E:
+				controlled_->addAngVel(consts::ANG_VEC_MOD);
+				break;
+			case SDL_SCANCODE_SPACE:
+				controlled_->immediateStop();
+				break;
+			default:
+				break;
+		}
+	}
+
+	void Input::handleKeyEvent(const SDL_Event &event)
 	{
 		if (event.type == SDL_KEYDOWN)
 		{
@@ -60,28 +95,16 @@ namespace eng
 			{
 				case SDL_SCANCODE_UP:
 				case SDL_SCANCODE_W:
-					controlled->addVel(consts::UP_VEL_MOD);
-					break;
 				case SDL_SCANCODE_LEFT:
 				case SDL_SCANCODE_A:
-					controlled->addVel(consts::LEFT_VEL_MOD);
-					break;
 				case SDL_SCANCODE_DOWN:
 				case SDL_SCANCODE_S:
-					controlled->addVel(consts::DOWN_VEL_MOD);
-					break;
 				case SDL_SCANCODE_RIGHT:
 				case SDL_SCANCODE_D:
-					controlled->addVel(consts::RIGHT_VEL_MOD);
-					break;
 				case SDL_SCANCODE_Q:
-					controlled->addAngVel(-consts::ANG_VEC_MOD);
-					break;
 				case SDL_SCANCODE_E:
-					controlled->addAngVel(consts::ANG_VEC_MOD);
-					break;
 				case SDL_SCANCODE_SPACE:
-					controlled->immediateStop();
+					keyboardMoveControlled(event);
 					break;
 				case SDL_SCANCODE_ESCAPE:
 					running_ = false;
@@ -92,7 +115,7 @@ namespace eng
 		}
 	}
 
-	void Input::handleMouseEvent(const SDL_Event &event, PhysicsObject *&controlled, World &world, Render &render)
+	void Input::handleMouseEvent(const SDL_Event &event, World &world, Render &render)
 	{
 		switch (event.type)
 		{
@@ -100,21 +123,23 @@ namespace eng
 				mouseCameraZoom(event, render);
 				break;
 			case SDL_MOUSEMOTION:
-				if (event.motion.state == SDL_BUTTON_RMASK)
+				if (event.button.button == SDL_BUTTON_LMASK)
+					mouseMoveControlled(event, world, render);
+				if (event.button.button == SDL_BUTTON_RMASK)
 					mouseCameraMove(event, render);
-				else if (event.motion.state == SDL_BUTTON_LMASK)
-					mouseMoveShape(event, controlled, world, render);
 				break;
 			case SDL_MOUSEBUTTONDOWN:
-				if (event.button.state == SDL_BUTTON_LMASK)
-					mouseSetControlled(controlled, world, render);
+				if (event.button.button == SDL_BUTTON_LMASK)
+					mouseSetControlled(world, render);
+				break;
+			case SDL_MOUSEBUTTONUP:
 				break;
 			default:
 				break;
 		}
 	}
 
-	void Input::handleEvents(World &world, PhysicsObject *&controlled, Render &render)
+	void Input::handleEvents(World &world, Render &render)
 	{
 		SDL_Event event;
 		while (SDL_PollEvent(&event))
@@ -126,12 +151,13 @@ namespace eng
 					break;
 				case SDL_KEYDOWN:
 				case SDL_KEYUP:
-					handleKeyEvent(event, controlled);
+					handleKeyEvent(event);
 					break;
 				case SDL_MOUSEWHEEL:
 				case SDL_MOUSEMOTION:
 				case SDL_MOUSEBUTTONDOWN:
-					handleMouseEvent(event, controlled, world, render);
+				case SDL_MOUSEBUTTONUP:
+					handleMouseEvent(event, world, render);
 					break;
 				default:
 					break;

@@ -24,12 +24,12 @@ namespace eng
 	public:
 		Render();
 		~Render();
-		void addZoomRelPos(double a, const Vec &m_pos);
-		void addCamPosRelZoom(const Vec &pos);
+		void cameraZoomRelPos(double f, const Vec &m_pos);
+		void cameraMoveRelZoom(const Vec &pos);
 		void setColor(uint32_t rgba);
-		void convertWorldToCamCoords(Vec &v);
-		void convertScreenToWorldCoords(Vec &v);
-		void convertScreenCoordsRelZoom(Vec &v);
+		void transformWorldToCamPos(Vec &v);
+		void transformScreenToWorldPos(Vec &v);
+		void transformScreenPosRelZoom(Vec &v);
 		void clear();
 		void update();
 		void paintPoint(Vec p);

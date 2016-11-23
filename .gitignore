@@ -1,2 +1,6 @@
 .idea
-lib/
+lib
+cmake-build-debug
+test/cmake_install.cmake
+test/Makefile
+test/CMakeFiles

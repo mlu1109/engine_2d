@@ -9,17 +9,20 @@ namespace eng
 {
 	class Input
 	{
+		bool running_ = true;
+		PhysicsObject *controlled_ = nullptr;
 		Vec mouseScreenPos();
-		void mouseSetControlled(PhysicsObject *&controlled, World &world, Render &render);
-		void mouseMoveShape(const SDL_Event &event, PhysicsObject *&controlled, World &world, Render &render);
+		void mouseSetControlled(World &world, Render &render);
+		void mouseMoveControlled(const SDL_Event &event, World &world, Render &render);
 		void mouseCameraZoom(const SDL_Event &event, Render &render);
 		void mouseCameraMove(const SDL_Event &event, Render &render);
-		void handleKeyEvent(const SDL_Event &event, PhysicsObject *&controlled);
-		void handleMouseEvent(const SDL_Event &event, PhysicsObject *&controlled, World &world, Render &render);
-		bool running_ = true;
+		void keyboardMoveControlled(const SDL_Event &event);
+		void handleKeyEvent(const SDL_Event &event);
+		void handleMouseEvent(const SDL_Event &event, World &world, Render &render);
 	public:
-		void handleEvents(World &world, PhysicsObject *&controlled, Render &render);
 		bool running() const;
+		const PhysicsObject *controlled() const;
+		void handleEvents(World &world, Render &render);
 	};
 }
 
